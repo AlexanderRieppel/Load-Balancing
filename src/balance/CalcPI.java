@@ -1,5 +1,7 @@
-package balance
+package balance;
 import java.lang.*;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.io.*;
 import java.rmi.*;
 import java.rmi.server.*;
@@ -7,7 +9,11 @@ import java.rmi.server.*;
 public class CalcPI extends Thread{
 	private ServerSocket srv;
     public CalcPI (){
-		srv = new ServerSocket(1234);
+		try {
+			srv = new ServerSocket(1234);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
 	
 	public void run(){
@@ -19,19 +25,24 @@ public class CalcPI extends Thread{
 				handleClient(skt);
             }
             // ServerSocket beenden: srvr.close(); 
-        } catch (InterruptedException ie) {
-            System.out.println(ie.getMessage());
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
 	}
 	
 	private void handleClient (Socket skt){
-		PrintWriter out = new PrintWriter(skt.getOutputStream(), true);
-		BufferedReader in = new BufferedReader(new InputStreamReader(skt.getInputStream()));
+		PrintWriter out;
+		try {
+			out = new PrintWriter(skt.getOutputStream(), true);
+			BufferedReader in = new BufferedReader(new InputStreamReader(skt.getInputStream()));
 		while(!in.ready()) this.sleep(100);
-        out.print(pi(Integer.parseInt(in.readLine())));
-        out.close();
+        	out.print(pi(Integer.parseInt(in.readLine())));
+        	out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
     private static double pi (int iterations){
         double res = 0;
