@@ -23,21 +23,42 @@
 
 
 \chapter{Aufgabenstellung}
+	Aufgabenstellung
+	Es soll ein Load Balancer mit mindestens 2 unterschiedlichen Load-Balancing Methoden (jeweils 7 Punkte) implementiert werden (ähnlich dem PI Beispiel [1]; Lösung zum Teil veraltet [2]). Eine Kombination von mehreren Methoden ist möglich. Die Berechnung bzw. das Service ist frei wählbar!
 	
+	Folgende Load Balancing Methoden stehen zur Auswahl:
+	
+	Least Connection
+	Weighted Distribution
+	Response Time
+	Server Probes
+	Um die Komplexität zu steigern, soll zusätzlich eine "Session Persistence" (2 Punkte) implementiert werden.
+	
+	Tests
+	
+	Die Tests sollen so aufgebaut sein, dass in der Gruppe jedes Mitglied mehrere Server fahren und ein Gruppenmitglied mehrere Anfragen an den Load Balancer stellen.
 \chapter{Designüberlegungen}
-	
+	Die Grundidee hinter dem Programm basiert auf Sockets, wobei es Server gibt die einen Dienst anbieten und nach 2 verschiednen Load Balancing Methoden, Benutzer zugewiesen bekommen.
 \chapter{Arbeitsaufteilung}
 	\tabulinesep = 4pt
 	\begin{tabu}  {|[2pt]X[2.5,c] |[1pt] X[4,c] |[1pt]X[1.3,c]|[1pt]X[c]|[2pt]}
 		\tabucline[2pt]{-}
 		Name & Arbeitssegment & Time Estimated & Time Spent\\\tabucline[2pt]{-}
 		
-		Walter Klaus & GUI Zeug machen und so & 5h & 10h\\\tabucline[1pt]{-}
-		Reiner Frank & Datenbanken ausblubbern& 100h & 5h\\\tabucline[2pt]{-}
-		Gesamt && 105h & 15h\\\tabucline[2pt]{-}
+		Alexander Rieppel & Client & 1h & 2h\\\tabucline[1pt]{-}
+		Thomas Traxler & Balancing Logik& 5h & 5h\\\tabucline[2pt]{-}
+		Thomas Traxler & Least Connection Algorithmus& 2h & 3h\\\tabucline[2pt]{-}
+		Alexander Rieppel & Response Time Algorithmus& 2h & 4h\\\tabucline[2pt]{-}
+		Gesamt && 10h & 14h\\\tabucline[2pt]{-}
 	\end{tabu}	
 \chapter{Arbeitsdurchführung}
+Wir haben uns für die beiden Load Balancing Methoden Least Connection und Response Time entschieden. Diese wurden so implementiert, dass es pro Load Balancing Algorithmus einen eigenen Load Balancer gibt, der die Anfragen auf die Server aufteilt.\\\\
+Es existiert eine Berechnungsklasse und eine Verbindungsklasse die gemeinsam einen Server darstellen. \\
+Darüber hinaus gibt es eine Klasse die für Load Balancing zuständig ist, wobei der Load Balancer für die gewünschte Methode manuell gestartet werden muss. Beim Load Balancer können nun Server registriert werden auf die der Load Balancer später die Last verteilt.\\
+Außerdem gibt es noch den Client der eine Verbindung über Sockets mit dem Load Balancer herstellt, seine Anfragen schickt und ein Ergebnis zurückbekommt wenn die Server die Anfrage bearbeitet haben.
 \chapter{Testbericht}
-\chapter{Quellen}
+Beim Service der auf den Servern angeboten werden soll, wurde sich für die numerische Berechnung von Pi entschieden.\\\\
+Zunächst müssen die Server und der gewünschte Load Balancer gestartet werden. Anschließend können beim Load Balancer die Server registriert werden. Dies geschieht indem man in die Konsole bspw. 'addServer 1234' eingibt. Dabei wird ein Socket auf dem Port 1234 geöffnet und der spezifische Server auf diesem Port hinzugefügt.\\\\
+Wenn alle Server hinzugefügt sind, kann der Client nun eine Anfrage senden. Diese Anfrage sieht so aus, dass er die IP-Adresse des Servers, den Port und die gewünschte Genauigkeit der Berechnung eingibt oder die beiden erstgenannten weglässt um einen Load Balancer am localhost und dem Standard Port zu kontaktieren.
 
 \end{document}
