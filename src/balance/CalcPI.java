@@ -14,6 +14,10 @@ public class CalcPI extends Thread{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		this.start();
+    }
+    public static void main (String[] args){
+    	new CalcPI();
     }
 	
 	public void run(){
@@ -23,8 +27,9 @@ public class CalcPI extends Thread{
                 Socket skt = srv.accept();
 				this.start();
 				handleClient(skt);
+				skt.close();
             }
-            // ServerSocket beenden: srvr.close(); 
+            // ServerSocket beenden: srv.close(); 
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
@@ -36,7 +41,11 @@ public class CalcPI extends Thread{
 			out = new PrintWriter(skt.getOutputStream(), true);
 			BufferedReader in = new BufferedReader(new InputStreamReader(skt.getInputStream()));
 		while(!in.ready()) this.sleep(100);
-        	out.print(pi(Integer.parseInt(in.readLine())));
+			try {
+				out.print(CalcPI.pi(Integer.parseInt(in.readLine())));
+			}catch (NumberFormatException nfe){
+				out.print("Not a Number");
+			}
         	out.close();
 		} catch (IOException e) {
 			e.printStackTrace();
