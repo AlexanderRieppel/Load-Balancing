@@ -79,7 +79,7 @@ public class Balancer extends Thread {
 				while(!in.ready())this.sleep(100);;
 				Server s = q.remove();
 				q.add(s);
-
+				System.out.println("Neue Verbindung bei Server "+s.getIdentify()+" mit "+s.getConnections()+" Connections");
 				PrintWriter out = new PrintWriter(skt.getOutputStream(), true);
 				out.println(s.calcPi(Integer.parseInt(in.readLine()))+"\n");
 				out.flush();
