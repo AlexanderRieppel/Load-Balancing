@@ -10,15 +10,19 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		try {
-			Socket cs = new Socket(args.length == 0 ? "127.0.0.1" : args[0],1234);
-			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(cs.getOutputStream()));
-			BufferedReader br = new BufferedReader(new InputStreamReader(cs.getInputStream()));
-			bw.write(args[1]);
+			Socket cs = new Socket(args.length <= 1 ? "127.0.0.1" : args[0],1234);
+			PrintWriter bw = new PrintWriter(new OutputStreamWriter(cs.getOutputStream()));
+			BufferedReader in = new BufferedReader(new InputStreamReader(cs.getInputStream()));
+			Thread.sleep(100);
+			bw.println(args.length <= 1 ?args[0]:args[1]);
 			bw.flush();
+			while (!in.ready())Thread.sleep(100);
+			System.out.println(in.readLine());
 			bw.close();
-			while (!br.ready());
+			in.close();
+			cs.close();
 
-		} catch (IOException e) {
+		} catch (IOException | InterruptedException e) {
 			System.out.println(e.getMessage());
 		}
 	}

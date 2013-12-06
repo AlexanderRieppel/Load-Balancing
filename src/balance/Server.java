@@ -21,8 +21,6 @@ public class Server {
 		BufferedReader in = new BufferedReader(new InputStreamReader(skt.getInputStream()));
 		out.println(iterations);
 		while(!in.ready());
-		out.close();
-		in.close();
 		connections--;
 		return Double.parseDouble(in.readLine());
 		 

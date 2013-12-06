@@ -17,6 +17,7 @@ public class Balancer extends Thread {
 	private ServerSocket srvr;
 
 	public static void main (String[] args) {
+		System.out.println("Balancer started");
 		Balancer b = new Balancer();
 	}
 	public Balancer() {
@@ -45,22 +46,29 @@ public class Balancer extends Thread {
 
 	}
 
+	public Balancer (PriorityQueue pq, ServerSocket srv,ConcurrentHashMap<String, Befehl> ar){
+		arg=ar;
+		srvr=srv;
+		q=pq;
+	}
 	
 
 	public void run() {
 		try {
 				
 				Socket skt = srvr.accept();
-				this.start();
-				PrintWriter out = new PrintWriter(skt.getOutputStream(), true);
 				BufferedReader in = new BufferedReader(new InputStreamReader(skt.getInputStream()));
-				while(!in.ready());
+				new Balancer(q,srvr,arg).start();
+				while(!in.ready())this.sleep(100);;
 				Server s = q.remove();
 				q.add(s);
-				out.print(s.calcPi(Integer.parseInt(in.readLine())));
+
+				PrintWriter out = new PrintWriter(skt.getOutputStream(), true);
+				out.println(s.calcPi(Integer.parseInt(in.readLine()))+"\n");
+				out.flush();
 				out.close();
 				
-		} catch (IOException ex) {
+		} catch (IOException | InterruptedException ex) {
 			System.out.println(ex.getMessage());
 		}
 	}

@@ -12,25 +12,29 @@ public class CalcPI extends Thread {
 
 	public CalcPI() {
 		try {
-			srv = new ServerSocket(1234);
+			srv = new ServerSocket(1235);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		this.start();
     }
+	
+	public CalcPI(ServerSocket sr){
+		srv=sr;
+	}
     public static void main (String[] args){
     	new CalcPI();
 	}
 
 	public void run() {
-		System.out.println("Thread gestartet");
+		System.out.println("Thread started");
 		try {
-			while (true) {
 				Socket skt = srv.accept();
-				this.start();
+				
+				new CalcPI(srv).start();
 				handleClient(skt);
 				skt.close();
-			}
+			
             // ServerSocket beenden: srv.close(); 
 		} catch (IOException ex) {
 			System.out.println(ex.getMessage());
@@ -44,10 +48,11 @@ public class CalcPI extends Thread {
 			BufferedReader in = new BufferedReader(new InputStreamReader(
 					skt.getInputStream()));
 			try {
-				out.print(CalcPI.pi(Integer.parseInt(in.readLine())));
+				out.println(CalcPI.pi(Integer.parseInt(in.readLine())));
 			}catch (NumberFormatException nfe){
 				out.print("Not a Number");
 			}
+			out.flush();
 			out.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -58,7 +63,9 @@ public class CalcPI extends Thread {
 		double res = 0;
 		for (int i = 1; i < iterations; i += 4) {
 			res += 1.0 / i - 1.0 / (i + 2);
+			System.out.println(iterations+" i:"+i+" res:"+res);
 		}
+		System.out.println("fertig");
 		return 4 * res;
 	}
 };
