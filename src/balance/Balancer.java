@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.PriorityBlockingQueue;
 /**
  * Balancerklasse mit Least Connection
  * @author Thomas Traxler
@@ -17,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Balancer extends Thread {
 
 	private static ConcurrentHashMap<String, Befehl> arg = new ConcurrentHashMap<String, Befehl>();
-	private PriorityQueue<Server> q;
+	private PriorityBlockingQueue<Server> q;
 	private ServerSocket srvr;
 	/**
 	 * Balancer Init
@@ -31,7 +32,7 @@ public class Balancer extends Thread {
 	 * neuer Balancer gestartet, empfaengt eingehende Clients
 	 */
 	public Balancer() {
-		q = new PriorityQueue<Server>(10,new ServerComparator());
+		q = new PriorityBlockingQueue<Server>(10,new ServerComparator());
 		arg.put("addServer", new AddServer(q));
 		try {
 			srvr = new ServerSocket(1234);
@@ -61,7 +62,7 @@ public class Balancer extends Thread {
 	 * @param srv
 	 * @param ar
 	 */
-	private Balancer (PriorityQueue pq, ServerSocket srv,ConcurrentHashMap<String, Befehl> ar){
+	private Balancer (PriorityBlockingQueue pq, ServerSocket srv,ConcurrentHashMap<String, Befehl> ar){
 		arg=ar;
 		srvr=srv;
 		q=pq;
@@ -76,7 +77,8 @@ public class Balancer extends Thread {
 				Socket skt = srvr.accept();
 				BufferedReader in = new BufferedReader(new InputStreamReader(skt.getInputStream()));
 				new Balancer(q,srvr,arg).start();
-				while(!in.ready())this.sleep(100);;
+				while(!in.ready())this.sleep(100);
+				while(q.size()==0);
 				Server s = q.remove();
 				q.add(s);
 				System.out.println("Neue Verbindung bei Server "+s.getIdentify()+" mit "+s.getConnections()+" Connections");
@@ -101,11 +103,11 @@ public class Balancer extends Thread {
 	    {
 	        if (x.getConnections() < y.getConnections())
 	        {
-	            return -1;
+	            return 1;
 	        }
 	        if (x.getConnections() > y.getConnections())
 	        {
-	            return 1;
+	            return -1;
 	        }
 	        return 0;
 	    }

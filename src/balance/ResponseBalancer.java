@@ -7,8 +7,8 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Comparator;
-import java.util.PriorityQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.PriorityBlockingQueue;
 /**
  * Balancerklasse mit Server Probes
  * @author Alexander Rieppel
@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ResponseBalancer extends Thread {
 
 	private static ConcurrentHashMap<String, Befehl> arg = new ConcurrentHashMap<String, Befehl>();
-	private PriorityQueue<ResponseServer> q;
+	private PriorityBlockingQueue<ResponseServer> q;
 	private ServerSocket srvr;
 	/**
 	 * Balancer Init
@@ -31,7 +31,7 @@ public class ResponseBalancer extends Thread {
 	 * neuer Balancer gestartet, empfaengt eingehende Clients
 	 */
 	public ResponseBalancer() {
-		q = new PriorityQueue<ResponseServer>(10,new ResponseServerComparator());
+		q = new PriorityBlockingQueue<ResponseServer>(10,new ResponseServerComparator());
 		arg.put("addServer", new AddResponseServer(q));
 		try {
 			srvr = new ServerSocket(1234);
@@ -62,7 +62,7 @@ public class ResponseBalancer extends Thread {
 	 * @param srv
 	 * @param ar
 	 */
-	public ResponseBalancer (PriorityQueue pq, ServerSocket srv,ConcurrentHashMap<String, Befehl> ar){
+	public ResponseBalancer (PriorityBlockingQueue pq, ServerSocket srv,ConcurrentHashMap<String, Befehl> ar){
 		arg=ar;
 		srvr=srv;
 		q=pq;
@@ -77,10 +77,11 @@ public class ResponseBalancer extends Thread {
 				Socket skt = srvr.accept();
 				BufferedReader in = new BufferedReader(new InputStreamReader(skt.getInputStream()));
 				new ResponseBalancer(q,srvr,arg).start();
-				while(!in.ready())this.sleep(100);;
+				while(!in.ready())this.sleep(100);
+				while(q.size()==0);
 				ResponseServer s = q.remove();
 				q.add(s);
-				System.out.println("Neue Verbindung bei Server"+s.getIdentify()+" mit"+s.getConnections()+"probed Response Time");
+				System.out.println("Neue Verbindung bei Server "+s.getIdentify()+" mit "+s.getConnections()+" probed Response Time");
 				PrintWriter out = new PrintWriter(skt.getOutputStream(), true);
 				out.println(s.calcPi(Integer.parseInt(in.readLine()))+"\n");
 				out.flush();
@@ -103,11 +104,11 @@ public class ResponseBalancer extends Thread {
 	    {
 	        if (x.getConnections() < y.getConnections())
 	        {
-	            return -1;
+	            return 1;
 	        }
 	        if (x.getConnections() > y.getConnections())
 	        {
-	            return 1;
+	            return -1;
 	        }
 	        return 0;
 	    }

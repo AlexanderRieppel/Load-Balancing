@@ -3,6 +3,7 @@ package balance;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Queue;
+import java.util.concurrent.PriorityBlockingQueue;
 /**
  * Fuegt Angegebenen Server zur Serverqueue hinzu
  * @author Thomas Traxler
@@ -10,9 +11,9 @@ import java.util.Queue;
  */
 public class AddResponseServer implements Befehl{
 
-	private Queue<ResponseServer>qs;
+	private PriorityBlockingQueue<ResponseServer>qs;
 	
-	public AddResponseServer (Queue<ResponseServer> s){
+	public AddResponseServer (PriorityBlockingQueue<ResponseServer> s){
 		qs=s;
 	}
 	@Override
