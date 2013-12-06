@@ -6,10 +6,17 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-
+/**
+ * Berechnet PI
+ * @author Thomas Traxler
+ *
+ */
 public class CalcPI extends Thread {
 	private ServerSocket srv;
-
+	/**
+	 * Init
+	 * @param s
+	 */
 	public CalcPI(String s) {
 		try {
 			srv = new ServerSocket(Integer.parseInt(s));
@@ -18,14 +25,19 @@ public class CalcPI extends Thread {
 		}
 		this.start();
     }
-	
+	/**
+	 * init
+	 * @param sr
+	 */
 	public CalcPI(ServerSocket sr){
 		srv=sr;
 	}
     public static void main (String[] args){
     	new CalcPI(args.length>0?args[0]:"1235");
 	}
-
+    /**
+     * Startet anfragenbehandlung
+     */
 	public void run() {
 		System.out.println("Thread started");
 		try {
@@ -40,7 +52,10 @@ public class CalcPI extends Thread {
 			System.out.println(ex.getMessage());
 		}
 	}
-
+	/**
+	 * Handled eine Anfrage
+	 * @param skt
+	 */
 	private void handleClient(Socket skt) {
 		PrintWriter out;
 		try {
@@ -57,7 +72,11 @@ public class CalcPI extends Thread {
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 * Macht berechnung
+	 * @param iterations
+	 * @return
+	 */
 	private static double pi(int iterations) {
 		double res = 0;
 		for (int i = 1; i < iterations; i += 4) {

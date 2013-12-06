@@ -2,10 +2,15 @@ package balance;
 
 import java.io.*;
 import java.net.*;
-
+/**
+ * Client
+ * @author Alexander Rieppel
+ *
+ */
 public class Main {
 
 	/**
+	 * 
 	 * @param args
 	 */
 	public static void main(String[] args) {

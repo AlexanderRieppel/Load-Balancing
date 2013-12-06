@@ -9,17 +9,27 @@ import java.net.Socket;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.concurrent.ConcurrentHashMap;
-
+/**
+ * Balancerklasse mit Least Connection
+ * @author Thomas Traxler
+ *
+ */
 public class Balancer extends Thread {
 
 	private static ConcurrentHashMap<String, Befehl> arg = new ConcurrentHashMap<String, Befehl>();
 	private PriorityQueue<Server> q;
 	private ServerSocket srvr;
-
+	/**
+	 * Balancer Init
+	 * @param args
+	 */
 	public static void main (String[] args) {
 		System.out.println("Balancer started");
 		Balancer b = new Balancer();
 	}
+	/**
+	 * neuer Balancer gestartet, empfaengt eingehende Clients
+	 */
 	public Balancer() {
 		q = new PriorityQueue<Server>(10,new ServerComparator());
 		arg.put("addServer", new AddServer(q));
@@ -45,14 +55,21 @@ public class Balancer extends Thread {
 		}
 
 	}
-
-	public Balancer (PriorityQueue pq, ServerSocket srv,ConcurrentHashMap<String, Befehl> ar){
+	/**
+	 * Startet neue Clientverbindung
+	 * @param pq
+	 * @param srv
+	 * @param ar
+	 */
+	private Balancer (PriorityQueue pq, ServerSocket srv,ConcurrentHashMap<String, Befehl> ar){
 		arg=ar;
 		srvr=srv;
 		q=pq;
 	}
 	
-
+	/**
+	 * Verarbeitet neuen Client
+	 */
 	public void run() {
 		try {
 				
@@ -72,6 +89,11 @@ public class Balancer extends Thread {
 			System.out.println(ex.getMessage());
 		}
 	}
+	/**
+	 * Vergleicht zwei Server
+	 * @author Thomas Traxler
+	 *
+	 */
 	private class ServerComparator implements Comparator<Server>
 	{
 	    @Override

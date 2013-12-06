@@ -3,7 +3,11 @@ package balance;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Queue;
-
+/**
+ * Fuegt Angegebenen Server zur Serverqueue hinzu
+ * @author Thomas Traxler
+ *
+ */
 public class AddServer implements Befehl{
 
 	private Queue<Server>qs;
@@ -17,7 +21,7 @@ public class AddServer implements Befehl{
 		try {
 			qs.add(new Server(args[1],Integer.parseInt(args[2])));
 		} catch (NumberFormatException e) {
-			e.printStackTrace();
+			System.out.println("Keine gueltigen parameter angegeben.");
 		}
 		
 	}

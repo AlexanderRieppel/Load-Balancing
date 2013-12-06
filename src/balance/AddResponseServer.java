@@ -3,7 +3,11 @@ package balance;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Queue;
-
+/**
+ * Fuegt Angegebenen Server zur Serverqueue hinzu
+ * @author Thomas Traxler
+ *
+ */
 public class AddResponseServer implements Befehl{
 
 	private Queue<ResponseServer>qs;

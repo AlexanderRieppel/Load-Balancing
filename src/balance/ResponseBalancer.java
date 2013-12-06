@@ -9,17 +9,27 @@ import java.net.Socket;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.concurrent.ConcurrentHashMap;
-
+/**
+ * Balancerklasse mit Server Probes
+ * @author Alexander Rieppel
+ *
+ */
 public class ResponseBalancer extends Thread {
 
 	private static ConcurrentHashMap<String, Befehl> arg = new ConcurrentHashMap<String, Befehl>();
 	private PriorityQueue<ResponseServer> q;
 	private ServerSocket srvr;
-
+	/**
+	 * Balancer Init
+	 * @param args
+	 */
 	public static void main (String[] args) {
 		System.out.println("Balancer started");
 		ResponseBalancer b = new ResponseBalancer();
 	}
+	/**
+	 * neuer Balancer gestartet, empfaengt eingehende Clients
+	 */
 	public ResponseBalancer() {
 		q = new PriorityQueue<ResponseServer>(10,new ResponseServerComparator());
 		arg.put("addServer", new AddResponseServer(q));
@@ -46,13 +56,21 @@ public class ResponseBalancer extends Thread {
 
 	}
 
+	/**
+	 * Startet neue Clientverbindung
+	 * @param pq
+	 * @param srv
+	 * @param ar
+	 */
 	public ResponseBalancer (PriorityQueue pq, ServerSocket srv,ConcurrentHashMap<String, Befehl> ar){
 		arg=ar;
 		srvr=srv;
 		q=pq;
 	}
 	
-
+	/**
+	 * Verarbeitet neuen Client
+	 */
 	public void run() {
 		try {
 				
@@ -72,6 +90,12 @@ public class ResponseBalancer extends Thread {
 			System.out.println(ex.getMessage());
 		}
 	}
+
+	/**
+	 * Vergleicht zwei Server
+	 * @author Alexander Rieppel
+	 *
+	 */
 	private class ResponseServerComparator implements Comparator<ResponseServer>
 	{
 	    @Override

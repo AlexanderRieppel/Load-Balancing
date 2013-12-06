@@ -6,18 +6,32 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-
+/**
+ * Macht Verbindung von Balancer zu Server
+ * @author Thomas Traxler
+ *
+ */
 public class ResponseServer extends Thread{
 	
 	private String url;
 	private int port;
 	private long respTime;
-	
+	/**
+	 * Init
+	 * @param url
+	 * @param port
+	 */
 	public ResponseServer (String url, int port){
 		this.url=url;
 		this.port=port;
 		this.start();
 	}
+	/**
+	 * Berechnung aufrufen udn Antwort zurueckgeben
+	 * @param iterations
+	 * @return
+	 * @throws IOException
+	 */
 	
 	public String calcPi (int iterations) throws IOException {
 		Socket skt = new Socket (url,port);
@@ -29,10 +43,17 @@ public class ResponseServer extends Thread{
 		return in.readLine();
 		 
 	}
+	/**
+	 * Return damit Server vergleichbar sind
+	 * @return
+	 */
 	
 	public long getConnections(){
 		return respTime;
 	}
+	/**
+	 * Aktualisiert sekuendlich die Antwortzeit
+	 */
 	public void run(){
 		while(true){
 			long time = System.currentTimeMillis();
