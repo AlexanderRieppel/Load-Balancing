@@ -16,40 +16,65 @@ public class CalcPI extends Thread {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+<<<<<<< HEAD
+	}
+
+	public void run() {
+=======
 		this.start();
     }
     public static void main (String[] args){
     	new CalcPI();
-	}
-
-	public void run() {
+    }
+	
+	public void run(){
+>>>>>>> origin/master
 		System.out.println("Thread gestartet");
 		try {
 			while (true) {
 				Socket skt = srv.accept();
 				this.start();
 				handleClient(skt);
-				skt.close();
+<<<<<<< HEAD
 			}
-            // ServerSocket beenden: srv.close(); 
+			// ServerSocket beenden: srvr.close();
 		} catch (IOException ex) {
 			System.out.println(ex.getMessage());
 		}
+=======
+				skt.close();
+            }
+            // ServerSocket beenden: srv.close(); 
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+>>>>>>> origin/master
 	}
 
 	private void handleClient(Socket skt) {
 		PrintWriter out;
 		try {
 			out = new PrintWriter(skt.getOutputStream(), true);
+<<<<<<< HEAD
 			BufferedReader in = new BufferedReader(new InputStreamReader(
 					skt.getInputStream()));
+			while (!in.ready())
+				this.sleep(100);
+			out.print(pi(Integer.parseInt(in.readLine())));
+			out.close();
+=======
+			BufferedReader in = new BufferedReader(new InputStreamReader(skt.getInputStream()));
+		while(!in.ready()) this.sleep(100);
 			try {
 				out.print(CalcPI.pi(Integer.parseInt(in.readLine())));
 			}catch (NumberFormatException nfe){
 				out.print("Not a Number");
 			}
-			out.close();
+        	out.close();
+>>>>>>> origin/master
 		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
