@@ -8,21 +8,25 @@ import java.net.Socket;
 
 public class Server {
 	
-	private Socket skt;
+	private String url;
+	private int port;
 	private int connections;
 	
-	public Server (Socket s){
-		skt=s;
+	public Server (String url, int port){
+		this.url=url;
+		this.port=port;
 	}
 	
-	public double calcPi (int iterations) throws IOException {
+	public String calcPi (int iterations) throws IOException {
+		Socket skt = new Socket (url,port);
 		connections++;
+		
 		PrintWriter out = new PrintWriter(skt.getOutputStream(), true);
 		BufferedReader in = new BufferedReader(new InputStreamReader(skt.getInputStream()));
 		out.println(iterations);
 		while(!in.ready());
 		connections--;
-		return Double.parseDouble(in.readLine());
+		return in.readLine();
 		 
 	}
 	

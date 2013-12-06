@@ -10,9 +10,9 @@ import java.net.Socket;
 public class CalcPI extends Thread {
 	private ServerSocket srv;
 
-	public CalcPI() {
+	public CalcPI(String s) {
 		try {
-			srv = new ServerSocket(1235);
+			srv = new ServerSocket(Integer.parseInt(s));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -23,7 +23,7 @@ public class CalcPI extends Thread {
 		srv=sr;
 	}
     public static void main (String[] args){
-    	new CalcPI();
+    	new CalcPI(args.length>0?args[0]:"1235");
 	}
 
 	public void run() {
@@ -52,7 +52,6 @@ public class CalcPI extends Thread {
 			}catch (NumberFormatException nfe){
 				out.print("Not a Number");
 			}
-			out.flush();
 			out.close();
 		} catch (IOException e) {
 			e.printStackTrace();
