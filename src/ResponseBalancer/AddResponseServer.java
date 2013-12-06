@@ -1,9 +1,8 @@
-package balance;
+package ResponseBalancer;
 
-import java.io.IOException;
-import java.net.Socket;
-import java.util.Queue;
 import java.util.concurrent.PriorityBlockingQueue;
+
+import ResponseServer.ResponseServer;
 /**
  * Fuegt Angegebenen Server zur Serverqueue hinzu
  * @author Thomas Traxler
@@ -22,7 +21,7 @@ public class AddResponseServer implements Befehl{
 		try {
 			qs.add(new ResponseServer(args[1],Integer.parseInt(args[2])));
 		} catch (NumberFormatException e) {
-			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 		
 	}

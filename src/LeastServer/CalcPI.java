@@ -1,4 +1,4 @@
-package balance;
+package LeastServer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,7 +21,9 @@ public class CalcPI extends Thread {
 		try {
 			srv = new ServerSocket(Integer.parseInt(s));
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println(e.getMessage());
+		} catch (IllegalArgumentException e1){
+			System.out.println(e1.getMessage());
 		}
 		this.start();
     }
@@ -34,15 +36,20 @@ public class CalcPI extends Thread {
 	}
     public static void main (String[] args){
     	new CalcPI(args.length>0?args[0]:"1235");
+    	if(args.length==0){
+    		System.out.println("Port 1235");
+    	}else{
+    		System.out.println("Port "+args[0]);
+    	}
 	}
     /**
      * Startet anfragenbehandlung
      */
 	public void run() {
 		System.out.println("Thread started");
+		
 		try {
 				Socket skt = srv.accept();
-				
 				new CalcPI(srv).start();
 				handleClient(skt);
 				skt.close();
@@ -69,7 +76,7 @@ public class CalcPI extends Thread {
 			}
 			out.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 	}
 	/**

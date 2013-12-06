@@ -1,4 +1,4 @@
-package balance;
+package LeastBalancer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,15 +9,17 @@ import java.net.Socket;
 import java.util.Comparator;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.PriorityBlockingQueue;
+
+import LeastServer.Server;
 /**
- * Balancerklasse mit Server Probes
- * @author Alexander Rieppel
+ * Balancerklasse mit Least Connection
+ * @author Thomas Traxler
  *
  */
-public class ResponseBalancer extends Thread {
+public class Balancer extends Thread {
 
 	private static ConcurrentHashMap<String, Befehl> arg = new ConcurrentHashMap<String, Befehl>();
-	private PriorityBlockingQueue<ResponseServer> q;
+	private PriorityBlockingQueue<Server> q;
 	private ServerSocket srvr;
 	/**
 	 * Balancer Init
@@ -25,18 +27,18 @@ public class ResponseBalancer extends Thread {
 	 */
 	public static void main (String[] args) {
 		System.out.println("Balancer started");
-		ResponseBalancer b = new ResponseBalancer();
+		Balancer b = new Balancer();
 	}
 	/**
 	 * neuer Balancer gestartet, empfaengt eingehende Clients
 	 */
-	public ResponseBalancer() {
-		q = new PriorityBlockingQueue<ResponseServer>(10,new ResponseServerComparator());
-		arg.put("addServer", new AddResponseServer(q));
+	public Balancer() {
+		q = new PriorityBlockingQueue<Server>(10,new ServerComparator());
+		arg.put("addServer", new AddServer(q));
 		try {
 			srvr = new ServerSocket(1234);
 		} catch (IOException e1) {
-			e1.printStackTrace();
+			System.out.println(e1.getMessage());
 		}
 		this.start();
 		while (true) {
@@ -49,20 +51,19 @@ public class ResponseBalancer extends Thread {
 				}
 					
 			} catch (IOException e) {
-				e.printStackTrace();
+				System.out.println(e.getMessage());
 			}
 
 		}
 
 	}
-
 	/**
 	 * Startet neue Clientverbindung
 	 * @param pq
 	 * @param srv
 	 * @param ar
 	 */
-	public ResponseBalancer (PriorityBlockingQueue pq, ServerSocket srv,ConcurrentHashMap<String, Befehl> ar){
+	private Balancer (PriorityBlockingQueue pq, ServerSocket srv,ConcurrentHashMap<String, Befehl> ar){
 		arg=ar;
 		srvr=srv;
 		q=pq;
@@ -76,12 +77,12 @@ public class ResponseBalancer extends Thread {
 				
 				Socket skt = srvr.accept();
 				BufferedReader in = new BufferedReader(new InputStreamReader(skt.getInputStream()));
-				new ResponseBalancer(q,srvr,arg).start();
+				new Balancer(q,srvr,arg).start();
 				while(!in.ready())this.sleep(100);
 				while(q.size()==0);
-				ResponseServer s = q.remove();
+				Server s = q.remove();
 				q.add(s);
-				System.out.println("Neue Verbindung bei Server "+s.getIdentify()+" mit "+s.getConnections()+" probed Response Time");
+				System.out.println("Neue Verbindung bei Server "+s.getIdentify()+" mit "+s.getConnections()+" Connections");
 				PrintWriter out = new PrintWriter(skt.getOutputStream(), true);
 				out.println(s.calcPi(Integer.parseInt(in.readLine()))+"\n");
 				out.flush();
@@ -91,16 +92,15 @@ public class ResponseBalancer extends Thread {
 			System.out.println(ex.getMessage());
 		}
 	}
-
 	/**
 	 * Vergleicht zwei Server
-	 * @author Alexander Rieppel
+	 * @author Thomas Traxler
 	 *
 	 */
-	private class ResponseServerComparator implements Comparator<ResponseServer>
+	private class ServerComparator implements Comparator<Server>
 	{
 	    @Override
-	    public int compare(ResponseServer x, ResponseServer y)
+	    public int compare(Server x, Server y)
 	    {
 	        if (x.getConnections() < y.getConnections())
 	        {

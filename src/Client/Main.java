@@ -1,4 +1,4 @@
-package balance;
+package Client;
 
 import java.io.*;
 import java.net.*;

@@ -1,9 +1,8 @@
-package balance;
+package LeastBalancer;
 
-import java.io.IOException;
-import java.net.Socket;
-import java.util.Queue;
 import java.util.concurrent.PriorityBlockingQueue;
+
+import LeastServer.Server;
 /**
  * Fuegt Angegebenen Server zur Serverqueue hinzu
  * @author Thomas Traxler

@@ -1,4 +1,4 @@
-package balance;
+package LeastBalancer;
 /**
  * Interface fuer Konsolenbefehle
  * @author Thomas Traxler
