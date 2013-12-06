@@ -49,4 +49,8 @@ public class Server {
 	public int getConnections(){
 		return connections;
 	}
+	
+	public String getIdentify(){
+		return url+":"+port;
+	}
 }

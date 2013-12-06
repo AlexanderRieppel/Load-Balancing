@@ -76,4 +76,7 @@ public class ResponseServer extends Thread{
 			}
 		}
 	}
+	public String getIdentify(){
+		return url+":"+port;
+	}
 }
